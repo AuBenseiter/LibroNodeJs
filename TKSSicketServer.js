@@ -1,21 +1,21 @@
 'use strict';
 
 //IMPORTACIONES Y CONFIGURACIONES
-var tls = require('tls');   //protocolos TLS/SSL
-var fs = require('fs');     //Permite leer y escribir archivos en el sist.
+let tls = require('tls');   //protocolos TLS/SSL
+let fs = require('fs');     //Permite leer y escribir archivos en el sist.
 const PORT = 1337;      //PUERTO
 const HOST = '127.0.0.1'    //IP
 
 //OPCIONES PARA TLS
 //readFileSync read both files sincronamente
-var options = {
+let options = {
     key: fs.readFileSync('private-key.pem'), //Private key encrip, almacenada in private...
     cert: fs.readFileSync('public-cert.pem') //Public certificate that auth server
 };
 
 //CREACION DEL SERVIDOR
 //tls.createServer Crea el servidor utilizando 'options'
-var server = tls.createServer(options, function(socket) {
+let server = tls.createServer(options, function(socket) {
 // Send a friendly message to client when the conextion is ok
     socket.write("I am the server sending you a message.");
 // Print the data that we received of client
