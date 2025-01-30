@@ -1,46 +1,32 @@
-'use strict';
+const tls = require('tls');
+const fs = require('fs');
+const https = require('https');
+const PORT = 1337;
+//const HOST = '127.0.0.1';
 
-//IMPORTACIONES Y CONFIGURACIONES
-let tls = require('tls');   //protocolos TLS/SSL
-let fs = require('fs');     //Permite leer y escribir archivos en el sist.
-const PORT = 1337;      //PUERTO
-const HOST = '127.0.0.1'    //IP
-
-//OPCIONES PARA TLS
-//readFileSync read both files sincronamente
-let options = {
-    key: fs.readFileSync('private-key.pem'), //Private key encrip, almacenada in private...
-    cert: fs.readFileSync('public-cert.pem') //Public certificate that auth server
+const options = {
+    key: fs.readFileSync('mykey.pem'),
+    cert: fs.readFileSync('my-cert.pem'),
 };
 
-//CREACION DEL SERVIDOR
-//tls.createServer Crea el servidor utilizando 'options'
-let server = tls.createServer(options, function(socket) {
-// Send a friendly message to client when the conextion is ok
-    socket.write("I am the server sending you a message.");
-// Print the data that we received of client
-    socket.on('data', function(data) {
-        console.log('Received: %s [it is %d bytes long]',
-        data.toString().replace(/(\n)/gm,""), //conv binary to readable text & del line break
-        data.length); //show recive data
+const server = tls.createServer(options, (socket) => {
+    console.log('Cliente conectado');
+
+    socket.write("Mensaje desde el servidor.");
+
+    socket.on('data', (data) => {
+        console.log('Recibido: %s [de %d bytes]', data.toString().trim(), data.length);
     });
-// Let us know when the transmission is over
-    //Notify off conextion
-    socket.on('end', function() {
-        console.log('EOT (End Of Transmission)');
+
+    socket.on('end', () => {
+        console.log('Fin de la transmisión');
     });
 });
 
-//CONFIGURACION PARA ESCUCHAR CONEXIONES
-// Start listening on a specific port and address
-server.listen(PORT, HOST, function() {          //Do that server listen the port and host
-    console.log("I'm listening at %s, on port %s", HOST, PORT);
+server.listen(PORT, () => {
+    console.log(`Servidor escuchando en ${PORT}`);
 });
 
-//MANEJO DE ERRORES
-// When an error occurs, show it.
-server.on('error', function(error) { // Handle errors que occur on the server
-    console.error(error);
-// Close the connection after the error occurred.
-    server.destroy(); //cierra el servidor despues de un error
+server.on('error', (error) => {
+    console.error('Error del servidor:', error);
 });

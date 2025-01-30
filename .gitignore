@@ -8,3 +8,7 @@ node_modules
 .idea
 .gitignore
 *.pem
+*.csr
+*.srl
+*.cnf
+openssl.cnf
